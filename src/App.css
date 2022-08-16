@@ -20,6 +20,10 @@
     justify-content: flex-end;
 }
 
+.calendarPanelItem--current {
+    color: red;
+}
+
 .calendarButtons {
     display: flex;
     margin: 12px 0;

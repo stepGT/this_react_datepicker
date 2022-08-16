@@ -84,7 +84,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [year, day, month] = useMemo(() => {
     const currentYear = value.getFullYear();
     const currentDay = value.getDate();
-    const currentMonth = months[value.getMonth()];
+    const currentMonth = value.getMonth();
     return [currentYear, currentDay, currentMonth];
   }, [value]);
 
@@ -124,10 +124,6 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   return (
     <div style={{ padding: 12 }}>
-      Date:
-      <div>
-        {day} {month} {year}{' '}
-      </div>
       <div className="calendarButtons">
         <button onClick={prevYear}>Prev Year</button>
         <button onClick={prevMonth}>Prev Month</button>
@@ -143,8 +139,13 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
           );
         })}
         {dateCells.map((cell, i) => {
+          const isCurrentDate = cell.year === year && cell.month === month && cell.date === day;
           return (
-            <div key={i} className="calendarPanelItem">
+            <div
+              key={i}
+              className={
+                isCurrentDate ? 'calendarPanelItem calendarPanelItem--current' : 'calendarPanelItem'
+              }>
               {cell.date}
             </div>
           );
