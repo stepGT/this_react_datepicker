@@ -34,7 +34,7 @@ const getPreviousMonthDays = (year: number, month: number) => {
   //
   const dateCells: DateCellItem[] = [];
   const [cellYear, cellMonth] = month === 0 ? [year - 1, 11] : [year, month - 1];
-  for (let i = 0; i < prevMonthCellsAmount; i++) {
+  for (let i = prevMonthCellsAmount - 1; i >= 0; i--) {
     dateCells.push({
       year: cellYear,
       month: cellMonth,
@@ -94,7 +94,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     const prevMonthDays = getPreviousMonthDays(panelYear, panelMonth);
     const nextMonthDays = getNextMonthDays(panelYear, panelMonth);
     //
-    return [...prevMonthDays, ...nextMonthDays, ...currentMonthDays];
+    return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
   }, [panelYear, panelMonth]);
 
   const onDateSelect = () => {};
