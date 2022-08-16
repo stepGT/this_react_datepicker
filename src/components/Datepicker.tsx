@@ -97,7 +97,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
   }, [panelYear, panelMonth]);
 
-  const onDateSelect = () => {};
+  const onDateSelect = (cell: DateCellItem) => onChange(new Date(cell.year, cell.month, cell.date));
 
   const nextYear = () => {
     setPanelYear(panelYear + 1);
@@ -145,7 +145,8 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
               key={i}
               className={
                 isCurrentDate ? 'calendarPanelItem calendarPanelItem--current' : 'calendarPanelItem'
-              }>
+              }
+              onClick={() => onDateSelect(cell)}>
               {cell.date}
             </div>
           );
