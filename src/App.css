@@ -1,0 +1,21 @@
+* {
+    box-sizing: border-box;
+}
+
+.calendarPanel {
+    width: 700px;
+    height: 700px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    border-top: 1px solid lightgray;
+    border-left: 1px solid lightgray;
+}
+
+.calendarPanelItem {
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    padding: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
