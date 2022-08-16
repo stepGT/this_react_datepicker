@@ -99,10 +99,28 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   const onDateSelect = () => {};
 
-  const nextYear = () => {};
-  const prevYear = () => {};
-  const nextMonth = () => {};
-  const prevMonth = () => {};
+  const nextYear = () => {
+    setPanelYear(panelYear + 1);
+  };
+  const prevYear = () => {
+    setPanelYear(panelYear - 1);
+  };
+  const nextMonth = () => {
+    if (panelMonth === 11) {
+      setPanelMonth(0);
+      setPanelYear(panelYear + 1);
+    } else {
+      setPanelMonth(panelMonth + 1);
+    }
+  };
+  const prevMonth = () => {
+    if (panelMonth === 0) {
+      setPanelMonth(11);
+      setPanelYear(panelYear - 1);
+    } else {
+      setPanelMonth(panelMonth - 1);
+    }
+  };
 
   return (
     <div style={{ padding: 12 }}>
@@ -110,12 +128,26 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       <div>
         {day} {month} {year}{' '}
       </div>
+      <div className="calendarButtons">
+        <button onClick={prevYear}>Prev Year</button>
+        <button onClick={prevMonth}>Prev Month</button>
+        <button onClick={nextMonth}>Next Month</button>
+        <button onClick={nextYear}>Next Year</button>
+      </div>
       <div className="calendarPanel">
         {dayOfWeek.map((week, i) => {
-          return <div key={i} className="calendarPanelItem">{week}</div>;
+          return (
+            <div key={i} className="calendarPanelItem">
+              {week}
+            </div>
+          );
         })}
         {dateCells.map((cell, i) => {
-          return <div key={i} className="calendarPanelItem">{cell.date}</div>;
+          return (
+            <div key={i} className="calendarPanelItem">
+              {cell.date}
+            </div>
+          );
         })}
       </div>
     </div>

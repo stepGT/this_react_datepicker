@@ -19,3 +19,9 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.calendarButtons {
+    display: flex;
+    margin: 12px 0;
+    gap: 2%;
+}
