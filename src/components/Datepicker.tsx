@@ -25,10 +25,24 @@ const getDaysAmountInAMonth = (year: number, month: number) => {
   return nextMonthDate.getDate();
 };
 
+const sundayWeekToMondayWeekDayMap: Record<number, number> = {
+  0: 6,
+  1: 0,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+  6: 5
+}
+
+const getDayOfWeek = (date: Date) => {
+  const day = date.getDay();
+  return sundayWeekToMondayWeekDayMap[day];
+}
+
 const getPreviousMonthDays = (year: number, month: number) => {
   const currentMonthFirstDay = new Date(year, month, 1);
-  const dayOfWeek = currentMonthFirstDay.getDay();
-  const prevMonthCellsAmount = dayOfWeek - 1;
+  const prevMonthCellsAmount = getDayOfWeek(currentMonthFirstDay);
   //
   const daysAmountInPrevMonth = getDaysAmountInAMonth(year, month - 1);
   //
@@ -48,8 +62,7 @@ const VISIBLE_CELLS_AMOUNT = 6 * 7;
 
 const getNextMonthDays = (year: number, month: number) => {
   const currentMonthFirstDay = new Date(year, month, 1);
-  const dayOfWeek = currentMonthFirstDay.getDay();
-  const prevMonthCellsAmount = dayOfWeek - 1;
+  const prevMonthCellsAmount = getDayOfWeek(currentMonthFirstDay);
   const daysAmount = getDaysAmountInAMonth(year, month);
   const nextMonthDays = VISIBLE_CELLS_AMOUNT - daysAmount - prevMonthCellsAmount;
   //
@@ -124,6 +137,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   return (
     <div style={{ padding: 12 }}>
+      <div>{months[panelMonth]} {panelYear}</div>
       <div className="calendarButtons">
         <button onClick={prevYear}>Prev Year</button>
         <button onClick={prevMonth}>Prev Month</button>
