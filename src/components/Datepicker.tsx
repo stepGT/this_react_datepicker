@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   getDaysAmountInAMonth,
   getCurrentMonthDays,
@@ -17,6 +17,47 @@ interface DatepickerProps {
 }
 
 const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onFocus = () => {
+    setShowPopup(true);
+  };
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    //
+    const onDocumentClick = (e: MouseEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (element.contains(target)) {
+        return;
+      }
+      setShowPopup(false);
+    };
+
+    document.addEventListener('click', onDocumentClick);
+    return () => {
+      document.removeEventListener('click', onDocumentClick);
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className="wrapper">
+      <input type="text" onFocus={onFocus} />
+      {showPopup && (
+        <div className="content">
+          <DatepickerPopupContent value={value} onChange={onChange} min={min} max={max} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DatepickerPopupContent = ({ value, onChange, min, max }: DatepickerProps) => {
   const [panelYear, setPanelYear] = useState(() => value.getFullYear());
   const [panelMonth, setPanelMonth] = useState(() => value.getMonth());
 
