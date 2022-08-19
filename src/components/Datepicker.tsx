@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   getDaysAmountInAMonth,
   getCurrentMonthDays,
@@ -16,12 +16,50 @@ interface DatepickerProps {
   max?: Date;
 }
 
+const getInputValueFromDate = (value: Date) => {
+  const date = value.getDate();
+  const monthValue = value.getMonth();
+  const month = monthValue < 10 ? `0${monthValue}` : monthValue;
+  const year = value.getFullYear();
+  //
+  return `${date}-${month}-${year}`;
+};
+
+const validValueRegex = /^\d{2}-\d{2}-\d{4}$/;
+
+const isValidDateString = (value: string) => {
+  if (!validValueRegex.test(value)) return false;
+  //
+  const [date, month, year] = value.split('-').map((val) => parseInt(val, 10));
+  if (month < 1 || month > 12 || date < 1) return false;
+  //
+  const maxDaysInAMonth = getDaysAmountInAMonth(year, month - 1);
+  if (date > maxDaysInAMonth) return false;
+  return true;
+};
+
 const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [inputValue, setInputValue] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    setInputValue(getInputValueFromDate(value));
+  }, [value]);
 
   const onFocus = () => {
     setShowPopup(true);
+  };
+
+  const onBlur = () => {
+    if (!isValidDateString(inputValue)) return false;
+    const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
+    const dateObj = new Date(year, month, date);
+    onChange(dateObj);
+  };
+
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value.trim());
   };
 
   useEffect(() => {
@@ -47,7 +85,13 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   return (
     <div ref={ref} className="wrapper">
-      <input type="text" onFocus={onFocus} />
+      <input
+        value={inputValue}
+        type="text"
+        onFocus={onFocus}
+        onChange={onChangeInput}
+        onBlur={onBlur}
+      />
       {showPopup && (
         <div className="content">
           <DatepickerPopupContent value={value} onChange={onChange} min={min} max={max} />
