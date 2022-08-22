@@ -9,6 +9,7 @@ import {
   months,
   getInputValueFromDate,
   isValidDateString,
+  getDateFromInputValue,
 } from './utils';
 
 interface DatepickerProps {
@@ -35,27 +36,19 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     setInputValue(getInputValueFromDate(value));
   }, [value]);
 
-  const onFocus = () => {
+  const onInputClick = () => {
     setShowPopup(true);
   };
 
   const updateValueFromInputValue = () => {
-    if (!isValidDateString(inputValue)) return;
-    const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
-    const dateObj = new Date(year, month - 1, date);
-    onChange(dateObj);
+    const date = getDateFromInputValue(inputValue);
+    if (!date) return;
+    handleChange(date);
   };
 
   const inputValueDate = useMemo(() => {
-    if (!isValidDateString(inputValue)) return;
-    const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
-    const dateObj = new Date(year, month - 1, date);
-    return dateObj;
+    return getDateFromInputValue(inputValue);
   }, [inputValue]);
-
-  const onBlur = () => {
-    updateValueFromInputValue();
-  };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== 'Enter') {
@@ -66,6 +59,11 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value.trim());
+  };
+
+  const handleChange = (value: Date) => {
+    setShowPopup(false);
+    onChange(value);
   };
 
   useEffect(() => {
@@ -94,9 +92,8 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       <input
         value={inputValue}
         type="text"
-        onFocus={onFocus}
+        onClick={onInputClick}
         onChange={onChangeInput}
-        onBlur={onBlur}
         onKeyDown={onKeyDown}
       />
       {showPopup && (

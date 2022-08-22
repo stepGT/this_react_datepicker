@@ -116,3 +116,10 @@ export const isValidDateString = (value: string) => {
   if (date > maxDaysInAMonth) return false;
   return true;
 };
+
+export const getDateFromInputValue = (inputValue: string) => {
+  if (!isValidDateString(inputValue)) return;
+  const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
+  const dateObj = new Date(year, month - 1, date);
+  return dateObj;
+};
