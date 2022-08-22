@@ -98,7 +98,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       />
       {showPopup && (
         <div className="content">
-          <DatepickerPopupContent selectedValue={value} onChange={onChange} min={min} max={max} inputValueDate={inputValueDate} />
+          <DatepickerPopupContent selectedValue={value} onChange={handleChange} min={min} max={max} inputValueDate={inputValueDate} />
         </div>
       )}
     </div>
