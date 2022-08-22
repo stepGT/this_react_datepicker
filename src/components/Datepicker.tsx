@@ -7,6 +7,8 @@ import {
   DateCellItem,
   dayOfWeek,
   months,
+  getInputValueFromDate,
+  isValidDateString,
 } from './utils';
 
 interface DatepickerProps {
@@ -16,27 +18,13 @@ interface DatepickerProps {
   max?: Date;
 }
 
-const getInputValueFromDate = (value: Date) => {
-  const date = value.getDate();
-  const monthValue = value.getMonth();
-  const month = monthValue < 10 ? `0${monthValue}` : monthValue;
-  const year = value.getFullYear();
-  //
-  return `${date}-${month}-${year}`;
-};
-
-const validValueRegex = /^\d{2}-\d{2}-\d{4}$/;
-
-const isValidDateString = (value: string) => {
-  if (!validValueRegex.test(value)) return false;
-  //
-  const [date, month, year] = value.split('-').map((val) => parseInt(val, 10));
-  if (month < 1 || month > 12 || date < 1) return false;
-  //
-  const maxDaysInAMonth = getDaysAmountInAMonth(year, month - 1);
-  if (date > maxDaysInAMonth) return false;
-  return true;
-};
+interface DatepickerPopupContentProps {
+  selectedValue: Date;
+  inputValueDate?: Date;
+  onChange: (value: Date) => void;
+  min?: Date;
+  max?: Date;
+}
 
 const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -51,11 +39,29 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     setShowPopup(true);
   };
 
-  const onBlur = () => {
-    if (!isValidDateString(inputValue)) return false;
+  const updateValueFromInputValue = () => {
+    if (!isValidDateString(inputValue)) return;
     const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
-    const dateObj = new Date(year, month, date);
+    const dateObj = new Date(year, month - 1, date);
     onChange(dateObj);
+  };
+
+  const inputValueDate = useMemo(() => {
+    if (!isValidDateString(inputValue)) return;
+    const [date, month, year] = inputValue.split('-').map((val) => parseInt(val, 10));
+    const dateObj = new Date(year, month - 1, date);
+    return dateObj;
+  }, [inputValue]);
+
+  const onBlur = () => {
+    updateValueFromInputValue();
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    updateValueFromInputValue();
   };
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,26 +97,39 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
         onFocus={onFocus}
         onChange={onChangeInput}
         onBlur={onBlur}
+        onKeyDown={onKeyDown}
       />
       {showPopup && (
         <div className="content">
-          <DatepickerPopupContent value={value} onChange={onChange} min={min} max={max} />
+          <DatepickerPopupContent selectedValue={value} onChange={onChange} min={min} max={max} inputValueDate={inputValueDate} />
         </div>
       )}
     </div>
   );
 };
 
-const DatepickerPopupContent = ({ value, onChange, min, max }: DatepickerProps) => {
-  const [panelYear, setPanelYear] = useState(() => value.getFullYear());
-  const [panelMonth, setPanelMonth] = useState(() => value.getMonth());
+const DatepickerPopupContent = ({
+  selectedValue,
+  inputValueDate,
+  onChange,
+  min,
+  max,
+}: DatepickerPopupContentProps) => {
+  const [panelYear, setPanelYear] = useState(() => selectedValue.getFullYear());
+  const [panelMonth, setPanelMonth] = useState(() => selectedValue.getMonth());
+
+  useLayoutEffect(() => {
+    if (!inputValueDate) return;
+    setPanelMonth(inputValueDate.getMonth());
+    setPanelYear(inputValueDate.getFullYear());
+  }, [inputValueDate]);
 
   const [year, day, month] = useMemo(() => {
-    const currentYear = value.getFullYear();
-    const currentDay = value.getDate();
-    const currentMonth = value.getMonth();
+    const currentYear = selectedValue.getFullYear();
+    const currentDay = selectedValue.getDate();
+    const currentMonth = selectedValue.getMonth();
     return [currentYear, currentDay, currentMonth];
-  }, [value]);
+  }, [selectedValue]);
 
   const dateCells = useMemo(() => {
     const daysInAMonth = getDaysAmountInAMonth(panelYear, panelMonth);

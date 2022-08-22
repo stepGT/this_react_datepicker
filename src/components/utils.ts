@@ -93,3 +93,25 @@ export const getCurrentMonthDays = (year: number, month: number, numberOfDays: n
   }
   return dateCells;
 };
+
+export const getInputValueFromDate = (value: Date) => {
+  const date = value.getDate();
+  const monthValue = value.getMonth() + 1;
+  const month = monthValue < 10 ? `0${monthValue}` : monthValue;
+  const year = value.getFullYear();
+  //
+  return `${date}-${month}-${year}`;
+};
+
+const validValueRegex = /^\d{2}-\d{2}-\d{4}$/;
+
+export const isValidDateString = (value: string) => {
+  if (!validValueRegex.test(value)) return false;
+  //
+  const [date, month, year] = value.split('-').map((val) => parseInt(val, 10));
+  if (month < 1 || month > 12 || date < 1) return false;
+  //
+  const maxDaysInAMonth = getDaysAmountInAMonth(year, month - 1);
+  if (date > maxDaysInAMonth) return false;
+  return true;
+};
