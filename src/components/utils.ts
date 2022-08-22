@@ -95,7 +95,8 @@ export const getCurrentMonthDays = (year: number, month: number, numberOfDays: n
 };
 
 export const getInputValueFromDate = (value: Date) => {
-  const date = value.getDate();
+  const dateValue = value.getDate();
+  const date = dateValue < 10 ? `0${dateValue}` : dateValue;
   const monthValue = value.getMonth() + 1;
   const month = monthValue < 10 ? `0${monthValue}` : monthValue;
   const year = value.getFullYear();
