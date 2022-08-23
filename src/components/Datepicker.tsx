@@ -40,6 +40,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [inputValue, setInputValue] = useState('');
   const ref = useRef<HTMLDivElement>(null);
   const latestInputValue = useLatest(inputValue);
+  const latestValue = useLatest(value);
 
   useLayoutEffect(() => {
     setInputValue(getInputValueFromDate(value));
@@ -47,12 +48,6 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
 
   const onInputClick = () => {
     setShowPopup(true);
-  };
-
-  const updateValueFromInputValue = () => {
-    const date = getDateFromInputValue(inputValue);
-    if (!date) return;
-    handleChange(date);
   };
 
   const inputValueDate = useMemo(() => {
@@ -63,7 +58,13 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     if (e.key !== 'Enter') {
       return;
     }
-    updateValueFromInputValue();
+    const date = getDateFromInputValue(inputValue);
+    if (!date) {
+      setInputValue(getInputValueFromDate(value));
+    } else {
+      handleChange(date);
+    }
+    setShowPopup(false);
   };
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +92,9 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       if (dateFromInputValue) {
         onChange(dateFromInputValue);
       }
+      else {
+        setInputValue(getInputValueFromDate(latestValue.current));
+      }
       setShowPopup(false);
     };
 
@@ -98,7 +102,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     return () => {
       document.removeEventListener('click', onDocumentClick);
     };
-  }, [latestInputValue]);
+  }, [latestInputValue, latestValue]);
 
   return (
     <div ref={ref} className="wrapper">
