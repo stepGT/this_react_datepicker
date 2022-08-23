@@ -27,10 +27,19 @@ interface DatepickerPopupContentProps {
   max?: Date;
 }
 
+function useLatest<T>(value: T) {
+  const valueRef = useRef(value);
+  useLayoutEffect(() => {
+    valueRef.current = value;
+  }, [value]);
+  return valueRef;
+}
+
 const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  const latestInputValue = useLatest(inputValue);
 
   useLayoutEffect(() => {
     setInputValue(getInputValueFromDate(value));
@@ -78,6 +87,10 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       if (element.contains(target)) {
         return;
       }
+      const dateFromInputValue = getDateFromInputValue(latestInputValue.current);
+      if (dateFromInputValue) {
+        onChange(dateFromInputValue);
+      }
       setShowPopup(false);
     };
 
@@ -85,7 +98,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     return () => {
       document.removeEventListener('click', onDocumentClick);
     };
-  }, []);
+  }, [latestInputValue]);
 
   return (
     <div ref={ref} className="wrapper">
