@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { clsx } from 'clsx';
 import {
   getDaysAmountInAMonth,
   getCurrentMonthDays,
@@ -8,8 +9,8 @@ import {
   dayOfWeek,
   months,
   getInputValueFromDate,
-  isValidDateString,
   getDateFromInputValue,
+  isToday,
 } from './utils';
 
 interface DatepickerProps {
@@ -91,8 +92,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       const dateFromInputValue = getDateFromInputValue(latestInputValue.current);
       if (dateFromInputValue) {
         onChange(dateFromInputValue);
-      }
-      else {
+      } else {
         setInputValue(getInputValueFromDate(latestValue.current));
       }
       setShowPopup(false);
@@ -131,6 +131,7 @@ const DatepickerPopupContent = ({
 }: DatepickerPopupContentProps) => {
   const [panelYear, setPanelYear] = useState(() => selectedValue.getFullYear());
   const [panelMonth, setPanelMonth] = useState(() => selectedValue.getMonth());
+  const todayDate = useMemo(() => new Date(), []);
 
   useLayoutEffect(() => {
     if (!inputValueDate) return;
@@ -181,7 +182,9 @@ const DatepickerPopupContent = ({
 
   return (
     <div style={{ padding: 12 }}>
-      <div>{months[panelMonth]} {panelYear}</div>
+      <div>
+        {months[panelMonth]} {panelYear}
+      </div>
       <div className="calendarButtons">
         <button onClick={prevYear}>Prev Year</button>
         <button onClick={prevMonth}>Prev Month</button>
@@ -198,14 +201,17 @@ const DatepickerPopupContent = ({
         })}
         {dateCells.map((cell, i) => {
           const isCurrentDate = cell.year === year && cell.month === month && cell.date === day;
+          const isTodayDate = isToday(todayDate, cell);
           return (
             <div
               key={i}
-              className={
-                isCurrentDate ? 'calendarPanelItem calendarPanelItem--current' : 'calendarPanelItem'
-              }
+              className={clsx(
+                'calendarPanelItem',
+                isCurrentDate && 'calendarPanelItem--current',
+                isTodayDate && 'calendarPanelItem--today',
+              )}
               onClick={() => onDateSelect(cell)}>
-              {cell.date}
+              <div className='calendarPanelItem--date'>{cell.date}</div>
             </div>
           );
         })}

@@ -27,13 +27,27 @@
 .calendarPanelItem {
     border-right: 1px solid lightgray;
     border-bottom: 1px solid lightgray;
-    padding: 8px;
+    padding: 4px;
     display: flex;
     justify-content: flex-end;
+    align-items: flex-start;
+    cursor: pointer;
 }
 
-.calendarPanelItem--current {
+.calendarPanelItem--today {
     color: red;
+}
+
+.calendarPanelItem--date {
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.calendarPanelItem--current .calendarPanelItem--date {
+    width: 33%;
+    text-align: center;
+    background-color: red;
+    color: white;
 }
 
 .calendarButtons {
