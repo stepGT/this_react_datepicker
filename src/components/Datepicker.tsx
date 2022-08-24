@@ -200,15 +200,18 @@ const DatepickerPopupContent = ({
           );
         })}
         {dateCells.map((cell, i) => {
-          const isCurrentDate = cell.year === year && cell.month === month && cell.date === day;
+          const isSelectedDate = cell.year === year && cell.month === month && cell.date === day;
           const isTodayDate = isToday(todayDate, cell);
+          const isNotCurrent = cell.type !== 'current';
           return (
             <div
+              title={cell.date + ' ' + months[panelMonth] + ' ' + cell.year}
               key={i}
               className={clsx(
                 'calendarPanelItem',
-                isCurrentDate && 'calendarPanelItem--current',
+                isSelectedDate && 'calendarPanelItem--selected',
                 isTodayDate && 'calendarPanelItem--today',
+                isNotCurrent && 'calendarPanelItem--not-current',
               )}
               onClick={() => onDateSelect(cell)}>
               <div className='calendarPanelItem--date'>{cell.date}</div>

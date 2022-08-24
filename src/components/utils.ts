@@ -23,6 +23,7 @@ export interface DateCellItem {
   year: number;
   isToday?: boolean;
   isSelected?: boolean;
+  type: 'prev' | 'next' | 'current';
 }
 
 export const getDaysAmountInAMonth = (year: number, month: number) => {
@@ -59,6 +60,7 @@ export const getPreviousMonthDays = (year: number, month: number) => {
       year: cellYear,
       month: cellMonth,
       date: daysAmountInPrevMonth - i,
+      type: 'prev',
     });
   }
   return dateCells;
@@ -77,6 +79,7 @@ export const getNextMonthDays = (year: number, month: number) => {
       year: cellYear,
       month: cellMonth,
       date: i,
+      type: 'next',
     });
   }
   return dateCells;
@@ -89,6 +92,7 @@ export const getCurrentMonthDays = (year: number, month: number, numberOfDays: n
       year,
       month,
       date: i,
+      type: 'current',
     });
   }
   return dateCells;

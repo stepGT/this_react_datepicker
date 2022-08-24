@@ -43,11 +43,15 @@
     padding: 4px;
 }
 
-.calendarPanelItem--current .calendarPanelItem--date {
+.calendarPanelItem--selected .calendarPanelItem--date {
     width: 33%;
     text-align: center;
     background-color: red;
     color: white;
+}
+
+.calendarPanelItem--not-current .calendarPanelItem--date {
+    opacity: .4;
 }
 
 .calendarButtons {
