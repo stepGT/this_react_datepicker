@@ -135,3 +135,64 @@ export const isToday = (today: Date, cell: DateCellItem) => {
     today.getDate() === cell.date
   );
 };
+
+export const isInRange = (cell: DateCellItem, min?: Date, max?: Date) => {
+  if (min && max) {
+    return isSmallerThanDate(cell, max) && isBiggerThanDate(cell, min);
+  }
+  if (min) {
+    return isBiggerThanDate(cell, min);
+  }
+  if (max) {
+    return isSmallerThanDate(cell, max);
+  }
+  return true;
+};
+
+const isBiggerThanDate = (cell: DateCellItem, date: Date) => {
+  if (cell.year > date.getFullYear()) {
+    return true;
+  }
+  if (cell.year < date.getFullYear()) {
+    return false;
+  }
+  //
+  if (cell.month > date.getMonth()) {
+    return true;
+  }
+  if (cell.month < date.getMonth()) {
+    return false;
+  }
+  //
+  if (cell.date > date.getDate()) {
+    return true;
+  }
+  if (cell.date < date.getDate()) {
+    return false;
+  }
+  return cell.date >= date.getDate();
+};
+
+const isSmallerThanDate = (cell: DateCellItem, date: Date) => {
+  if (cell.year > date.getFullYear()) {
+    return false;
+  }
+  if (cell.year < date.getFullYear()) {
+    return true;
+  }
+  //
+  if (cell.month > date.getMonth()) {
+    return false;
+  }
+  if (cell.month < date.getMonth()) {
+    return true;
+  }
+  //
+  if (cell.date > date.getDate()) {
+    return false;
+  }
+  if (cell.date < date.getDate()) {
+    return true;
+  }
+  return cell.date <= date.getDate();
+};

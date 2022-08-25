@@ -11,6 +11,7 @@ import {
   getInputValueFromDate,
   getDateFromInputValue,
   isToday,
+  isInRange,
 } from './utils';
 
 interface DatepickerProps {
@@ -59,13 +60,24 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     if (e.key !== 'Enter') {
       return;
     }
+    setShowPopup(false);
     const date = getDateFromInputValue(inputValue);
     if (!date) {
       setInputValue(getInputValueFromDate(value));
-    } else {
-      handleChange(date);
+      return;
     }
-    setShowPopup(false);
+    const isDateInRange = isInRange(
+      {
+        year: date.getFullYear(),
+        month: date.getMonth(),
+        date: date.getDate(),
+        type: 'current',
+      },
+      min,
+      max,
+    );
+    if (!isDateInRange) return;
+    handleChange(date);
   };
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -203,6 +215,7 @@ const DatepickerPopupContent = ({
           const isSelectedDate = cell.year === year && cell.month === month && cell.date === day;
           const isTodayDate = isToday(todayDate, cell);
           const isNotCurrent = cell.type !== 'current';
+          const isDateInRange = isInRange(cell, min, max);
           return (
             <div
               title={cell.date + ' ' + months[panelMonth] + ' ' + cell.year}
@@ -212,9 +225,10 @@ const DatepickerPopupContent = ({
                 isSelectedDate && 'calendarPanelItem--selected',
                 isTodayDate && 'calendarPanelItem--today',
                 isNotCurrent && 'calendarPanelItem--not-current',
+                !isDateInRange && 'calendarPanelItem--not-in-range',
               )}
-              onClick={() => onDateSelect(cell)}>
-              <div className='calendarPanelItem--date'>{cell.date}</div>
+              onClick={() => isDateInRange && onDateSelect(cell)}>
+              <div className="calendarPanelItem--date">{cell.date}</div>
             </div>
           );
         })}

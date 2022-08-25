@@ -50,8 +50,13 @@
     color: white;
 }
 
-.calendarPanelItem--not-current .calendarPanelItem--date {
+.calendarPanelItem--not-current .calendarPanelItem--date,
+.calendarPanelItem--not-in-range .calendarPanelItem--date {
     opacity: .4;
+}
+
+.calendarPanelItem--not-in-range {
+    cursor: not-allowed;
 }
 
 .calendarButtons {
