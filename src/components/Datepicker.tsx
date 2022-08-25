@@ -41,27 +41,14 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   const [showPopup, setShowPopup] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const ref = useRef<HTMLDivElement>(null);
-  const latestInputValue = useLatest(inputValue);
-  const latestValue = useLatest(value);
 
   useLayoutEffect(() => {
     setInputValue(getInputValueFromDate(value));
   }, [value]);
 
-  const onInputClick = () => {
-    setShowPopup(true);
-  };
-
-  const inputValueDate = useMemo(() => {
-    return getDateFromInputValue(inputValue);
-  }, [inputValue]);
-
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key !== 'Enter') {
-      return;
-    }
-    setShowPopup(false);
+  const updateValueOnPopupCloseAction = () => {
     const date = getDateFromInputValue(inputValue);
+    setShowPopup(false);
     if (!date) {
       setInputValue(getInputValueFromDate(value));
       return;
@@ -77,7 +64,22 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       max,
     );
     if (!isDateInRange) return;
-    handleChange(date);
+    onChange(date);
+  };
+
+  const onInputClick = () => {
+    setShowPopup(true);
+  };
+
+  const inputValueDate = useMemo(() => {
+    return getDateFromInputValue(inputValue);
+  }, [inputValue]);
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+    updateValueOnPopupCloseAction();
   };
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +90,8 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     setShowPopup(false);
     onChange(value);
   };
+
+  const latestUpdateValueFromInput = useLatest(updateValueOnPopupCloseAction);
 
   useEffect(() => {
     const element = ref.current;
@@ -101,20 +105,14 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       if (element.contains(target)) {
         return;
       }
-      const dateFromInputValue = getDateFromInputValue(latestInputValue.current);
-      if (dateFromInputValue) {
-        onChange(dateFromInputValue);
-      } else {
-        setInputValue(getInputValueFromDate(latestValue.current));
-      }
-      setShowPopup(false);
+      latestUpdateValueFromInput.current();
     };
 
     document.addEventListener('click', onDocumentClick);
     return () => {
       document.removeEventListener('click', onDocumentClick);
     };
-  }, [latestInputValue, latestValue]);
+  }, [latestUpdateValueFromInput]);
 
   return (
     <div ref={ref} className="wrapper">
