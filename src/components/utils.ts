@@ -136,63 +136,63 @@ export const isToday = (today: Date, cell: DateCellItem) => {
   );
 };
 
-export const isInRange = (cell: DateCellItem, min?: Date, max?: Date) => {
+export const isInRange = (value: Date, min?: Date, max?: Date) => {
   if (min && max) {
-    return isSmallerThanDate(cell, max) && isBiggerThanDate(cell, min);
+    return isSmallerThanDate(value, max) && isBiggerThanDate(value, min);
   }
   if (min) {
-    return isBiggerThanDate(cell, min);
+    return isBiggerThanDate(value, min);
   }
   if (max) {
-    return isSmallerThanDate(cell, max);
+    return isSmallerThanDate(value, max);
   }
   return true;
 };
 
-const isBiggerThanDate = (cell: DateCellItem, date: Date) => {
-  if (cell.year > date.getFullYear()) {
+const isBiggerThanDate = (value: Date, date: Date) => {
+  if (value.getFullYear() > date.getFullYear()) {
     return true;
   }
-  if (cell.year < date.getFullYear()) {
+  if (value.getFullYear() < date.getFullYear()) {
     return false;
   }
   //
-  if (cell.month > date.getMonth()) {
+  if (value.getMonth() > date.getMonth()) {
     return true;
   }
-  if (cell.month < date.getMonth()) {
+  if (value.getMonth() < date.getMonth()) {
     return false;
   }
   //
-  if (cell.date > date.getDate()) {
+  if (value.getDate() > date.getDate()) {
     return true;
   }
-  if (cell.date < date.getDate()) {
+  if (value.getDate() < date.getDate()) {
     return false;
   }
-  return cell.date >= date.getDate();
+  return value.getDate() >= date.getDate();
 };
 
-const isSmallerThanDate = (cell: DateCellItem, date: Date) => {
-  if (cell.year > date.getFullYear()) {
+const isSmallerThanDate = (value: Date, date: Date) => {
+  if (value.getFullYear() > date.getFullYear()) {
     return false;
   }
-  if (cell.year < date.getFullYear()) {
+  if (value.getFullYear() < date.getFullYear()) {
     return true;
   }
   //
-  if (cell.month > date.getMonth()) {
+  if (value.getMonth() > date.getMonth()) {
     return false;
   }
-  if (cell.month < date.getMonth()) {
+  if (value.getMonth() < date.getMonth()) {
     return true;
   }
   //
-  if (cell.date > date.getDate()) {
+  if (value.getDate() > date.getDate()) {
     return false;
   }
-  if (cell.date < date.getDate()) {
+  if (value.getDate() < date.getDate()) {
     return true;
   }
-  return cell.date <= date.getDate();
+  return value.getDate() <= date.getDate();
 };

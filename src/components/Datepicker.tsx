@@ -54,12 +54,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
       return;
     }
     const isDateInRange = isInRange(
-      {
-        year: date.getFullYear(),
-        month: date.getMonth(),
-        date: date.getDate(),
-        type: 'current',
-      },
+      date,
       min,
       max,
     );
@@ -71,9 +66,18 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
     setShowPopup(true);
   };
 
-  const inputValueDate = useMemo(() => {
-    return getDateFromInputValue(inputValue);
-  }, [inputValue]);
+  const [inputValueDate, isValidInputValue] = useMemo(() => {
+    const date = getDateFromInputValue(inputValue);
+    if (!date) {
+      return [undefined, false];
+    }
+    const isDateInRange = isInRange(
+      date,
+      min,
+      max,
+    );
+    return [date, isDateInRange];
+  }, [inputValue, min, max]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== 'Enter') {
@@ -122,6 +126,10 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
         onClick={onInputClick}
         onChange={onChangeInput}
         onKeyDown={onKeyDown}
+        style={{
+          borderColor: isValidInputValue ? undefined : 'red',
+          color: isValidInputValue ? undefined : 'red',
+        }}
       />
       {showPopup && (
         <div className="content">
@@ -213,7 +221,7 @@ const DatepickerPopupContent = ({
           const isSelectedDate = cell.year === year && cell.month === month && cell.date === day;
           const isTodayDate = isToday(todayDate, cell);
           const isNotCurrent = cell.type !== 'current';
-          const isDateInRange = isInRange(cell, min, max);
+          const isDateInRange = isInRange(new Date(cell.year, cell.month, cell.date), min, max);
           return (
             <div
               title={cell.date + ' ' + months[panelMonth] + ' ' + cell.year}
