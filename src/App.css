@@ -2,26 +2,67 @@
     box-sizing: border-box;
 }
 
-.wrapper {
-    display: inline-block;
-    position: relative;
-    padding: 8px;
+body {
+    margin: 12px;
 }
 
-.content {
+.datePicker {
+    position: relative;
+    display: inline-block;
+}
+
+.datePicker__input {
+    border: 1px solid lightgrey;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.datePicker__input:focus {
+    outline: none;
+}
+
+.datePicker__input--invalid {
+    border-color: red;
+    color: red;
+}
+
+.datePicker__popup {
     position: absolute;
     top: 100%;
     left: 0;
 }
 
-.calendarPanel {
-    width: 700px;
-    height: 700px;
+.calendarPanel__header {
+    border: 1px solid lightgrey;
+    border-bottom: none;
+}
+
+.calendarPanel__date {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.calendarPanel__content {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(7, 1fr);
-    border-top: 1px solid lightgray;
-    border-left: 1px solid lightgray;
+    grid-template-columns: repeat(7, 1fr);
+    width: 420px;
+    height: 420px;
+    border-top: 1px solid lightgrey;
+    border-left: 1px solid lightgrey;
+}
+
+.calendarPanel__buttons {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+}
+
+.calendarPanel__buttons-right,
+.calendarPanel__buttons-left {
+    display: flex;
+    gap: 8px;
+    margin: 0 8px;
 }
 
 .calendarPanelItem {
@@ -34,33 +75,33 @@
     cursor: pointer;
 }
 
-.calendarPanelItem--today {
+.calendarPanelItem__today {
     color: red;
 }
 
-.calendarPanelItem--date {
+.calendarPanelItem__date {
     border-radius: 50%;
     padding: 4px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.calendarPanelItem--selected .calendarPanelItem--date {
-    width: 33%;
-    text-align: center;
+.calendarPanelItem__selected .calendarPanelItem__date {
     background-color: red;
     color: white;
 }
 
-.calendarPanelItem--not-current .calendarPanelItem--date,
-.calendarPanelItem--not-in-range .calendarPanelItem--date {
-    opacity: .4;
+.calendarPanelItem__not-current .calendarPanelItem__date {
+    opacity: 0.5;
 }
 
-.calendarPanelItem--not-in-range {
+.calendarPanelItem__not-in-range {
     cursor: not-allowed;
 }
 
-.calendarButtons {
-    display: flex;
-    margin: 12px 0;
-    gap: 2%;
+.calendarPanelItem__not-in-range .calendarPanelItem__date {
+    opacity: 0.5;
 }

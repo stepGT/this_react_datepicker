@@ -119,21 +119,24 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   }, [latestUpdateValueFromInput]);
 
   return (
-    <div ref={ref} className="wrapper">
+    <div ref={ref} className="datePicker">
       <input
         value={inputValue}
         type="text"
         onClick={onInputClick}
         onChange={onChangeInput}
         onKeyDown={onKeyDown}
-        style={{
-          borderColor: isValidInputValue ? undefined : 'red',
-          color: isValidInputValue ? undefined : 'red',
-        }}
+        className={clsx('datePicker__input', !isValidInputValue && 'datePicker__input--invalid')}
       />
       {showPopup && (
-        <div className="content">
-          <DatepickerPopupContent selectedValue={value} onChange={handleChange} min={min} max={max} inputValueDate={inputValueDate} />
+        <div className="datePicker__popup">
+          <DatepickerPopupContent
+            selectedValue={value}
+            onChange={handleChange}
+            min={min}
+            max={max}
+            inputValueDate={inputValueDate}
+          />
         </div>
       )}
     </div>
@@ -199,17 +202,23 @@ const DatepickerPopupContent = ({
   };
 
   return (
-    <div style={{ padding: 12 }}>
-      <div>
-        {months[panelMonth]} {panelYear}
+    <div className="calendarPanel">
+      <div className="calendarPanel__header">
+        <div className="calendarPanel__date">
+          {months[panelMonth]} {panelYear}
+        </div>
+        <div className="calendarPanel__buttons">
+          <div className="calendarPanel__buttons-left">
+            <button onClick={prevYear}>Prev Year</button>
+            <button onClick={prevMonth}>Prev Month</button>
+          </div>
+          <div className="calendarPanel__buttons-right">
+            <button onClick={nextMonth}>Next Month</button>
+            <button onClick={nextYear}>Next Year</button>
+          </div>
+        </div>
       </div>
-      <div className="calendarButtons">
-        <button onClick={prevYear}>Prev Year</button>
-        <button onClick={prevMonth}>Prev Month</button>
-        <button onClick={nextMonth}>Next Month</button>
-        <button onClick={nextYear}>Next Year</button>
-      </div>
-      <div className="calendarPanel">
+      <div className="calendarPanel__content">
         {dayOfWeek.map((week, i) => {
           return (
             <div key={i} className="calendarPanelItem">
@@ -228,13 +237,13 @@ const DatepickerPopupContent = ({
               key={i}
               className={clsx(
                 'calendarPanelItem',
-                isSelectedDate && 'calendarPanelItem--selected',
-                isTodayDate && 'calendarPanelItem--today',
-                isNotCurrent && 'calendarPanelItem--not-current',
-                !isDateInRange && 'calendarPanelItem--not-in-range',
+                isSelectedDate && 'calendarPanelItem__selected',
+                isTodayDate && 'calendarPanelItem__today',
+                isNotCurrent && 'calendarPanelItem__not-current',
+                !isDateInRange && 'calendarPanelItem__not-in-range',
               )}
               onClick={() => isDateInRange && onDateSelect(cell)}>
-              <div className="calendarPanelItem--date">{cell.date}</div>
+              <div className="calendarPanelItem__date">{cell.date}</div>
             </div>
           );
         })}
