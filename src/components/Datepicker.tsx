@@ -121,6 +121,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   return (
     <div ref={ref} className="datePicker">
       <input
+        data-testid='date-picker-input'
         value={inputValue}
         type="text"
         onClick={onInputClick}
@@ -129,7 +130,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
         className={clsx('datePicker__input', !isValidInputValue && 'datePicker__input--invalid')}
       />
       {showPopup && (
-        <div className="datePicker__popup">
+        <div className="datePicker__popup" data-testid="date-picker-popup">
           <DatepickerPopupContent
             selectedValue={value}
             onChange={handleChange}
