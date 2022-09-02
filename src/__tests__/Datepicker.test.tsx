@@ -2,14 +2,21 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Datepicker from '../components/Datepicker';
 
+const initialDate = new Date(2022, 7, 1);
+const today = new Date(2022, 7, 2);
+
 describe('Datepicker', () => {
+  beforeEach(() => {
+    jest.useFakeTimers().setSystemTime(today);
+  });
+
   it('should show correct date in input', () => {
-    render(<Datepicker value={new Date(2022, 7, 1)} onChange={() => {}} />);
+    render(<Datepicker value={initialDate} onChange={() => {}} />);
     expect(screen.getByTestId('date-picker-input')).toHaveValue('01-08-2022');
   });
 
   it('should open popup when we click on input', () => {
-    render(<Datepicker value={new Date(2022, 7, 1)} onChange={() => {}} />);
+    render(<Datepicker value={initialDate} onChange={() => {}} />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
     // close popup
@@ -19,13 +26,43 @@ describe('Datepicker', () => {
   });
 
   it('should close popup when we click outside', () => {
-    render(<Datepicker value={new Date(2022, 7, 1)} onChange={() => {}} />);
+    render(<Datepicker value={initialDate} onChange={() => {}} />);
     userEvent.click(screen.getByTestId('date-picker-input'));
     expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
   });
 
-  it.todo('should highlight today');
-  it.todo('should highlight selected date');
+  it('should highlight today', () => {
+    render(<Datepicker value={initialDate} onChange={() => {}} />);
+    // open popup
+    userEvent.click(screen.getByTestId('date-picker-input'));
+
+    expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
+
+    const todayCells = screen
+      .queryAllByTestId('date-picker-popup-cell')
+      .filter((item) => item.classList.contains('calendarPanelItem__today'));
+
+    expect(todayCells).toHaveLength(1);
+    const todayCell = todayCells[0];
+    expect(todayCell).toHaveTextContent(today.getDate().toString());
+  });
+
+  it('should highlight selected date', () => {
+    const selectedDate = initialDate;
+    render(<Datepicker value={selectedDate} onChange={() => {}} />);
+    // open popup
+    userEvent.click(screen.getByTestId('date-picker-input'));
+
+    expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
+
+    const selectedCells = screen
+      .queryAllByTestId('date-picker-popup-cell')
+      .filter((item) => item.classList.contains('calendarPanelItem__selected'));
+
+    expect(selectedCells).toHaveLength(1);
+    const selectedCell = selectedCells[0];
+    expect(selectedCell).toHaveTextContent(selectedDate.getDate().toString());
+  });
 
   it.todo('should select date');
 

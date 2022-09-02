@@ -119,7 +119,7 @@ const Datepicker = ({ value, onChange, min, max }: DatepickerProps) => {
   }, [latestUpdateValueFromInput]);
 
   return (
-    <div ref={ref} className="datePicker">
+    <div ref={ref} className="datePicker" data-testid="date-picker-view">
       <input
         data-testid='date-picker-input'
         value={inputValue}
@@ -243,6 +243,7 @@ const DatepickerPopupContent = ({
                 isNotCurrent && 'calendarPanelItem__not-current',
                 !isDateInRange && 'calendarPanelItem__not-in-range',
               )}
+              data-testid="date-picker-popup-cell"
               onClick={() => isDateInRange && onDateSelect(cell)}>
               <div className="calendarPanelItem__date">{cell.date}</div>
             </div>
