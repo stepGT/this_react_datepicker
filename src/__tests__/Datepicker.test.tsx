@@ -19,16 +19,17 @@ describe('Datepicker', () => {
     render(<Datepicker value={initialDate} onChange={() => {}} />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
-    // close popup
-    userEvent.click(document.documentElement);
-
-    expect(screen.queryByTestId('date-picker-popup')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
   });
 
   it('should close popup when we click outside', () => {
     render(<Datepicker value={initialDate} onChange={() => {}} />);
+    // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
     expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
+    // close popup
+    userEvent.click(document.documentElement);
+    expect(screen.queryByTestId('date-picker-popup')).not.toBeInTheDocument();
   });
 
   it('should highlight today', () => {
@@ -64,7 +65,9 @@ describe('Datepicker', () => {
     expect(selectedCell).toHaveTextContent(selectedDate.getDate().toString());
   });
 
-  it.todo('should select date');
+  it('should select date', () => {
+    
+  });
 
   it.todo('should apply valid date from input on outside click');
   it.todo('should apply valid date from input on enter press');
