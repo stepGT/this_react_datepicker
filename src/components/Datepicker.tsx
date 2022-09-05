@@ -14,7 +14,7 @@ import {
   isInRange,
 } from './utils';
 
-interface DatepickerProps {
+export interface DatepickerProps {
   value: Date;
   onChange: (value: Date) => void;
   min?: Date;

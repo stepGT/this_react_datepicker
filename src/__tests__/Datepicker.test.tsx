@@ -1,9 +1,21 @@
+import { useState } from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Datepicker from '../components/Datepicker';
+import Datepicker, { DatepickerProps } from '../components/Datepicker';
 
 const initialDate = new Date(2022, 7, 1);
 const today = new Date(2022, 7, 2);
+
+const TestApp = ({ value = initialDate, onChange, ...rest }: Partial<DatepickerProps>) => {
+  const [date, setDate] = useState(value);
+
+  const handleChange = (value: Date) => {
+    onChange?.(value);
+    setDate(value);
+  };
+
+  return <Datepicker value={date} onChange={handleChange} {...rest} />;
+};
 
 describe('Datepicker', () => {
   beforeEach(() => {
@@ -11,19 +23,19 @@ describe('Datepicker', () => {
   });
 
   it('should show correct date in input', () => {
-    render(<Datepicker value={initialDate} onChange={() => {}} />);
+    render(<TestApp />);
     expect(screen.getByTestId('date-picker-input')).toHaveValue('01-08-2022');
   });
 
   it('should open popup when we click on input', () => {
-    render(<Datepicker value={initialDate} onChange={() => {}} />);
+    render(<TestApp />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
     expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
   });
 
   it('should close popup when we click outside', () => {
-    render(<Datepicker value={initialDate} onChange={() => {}} />);
+    render(<TestApp />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
     expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
@@ -33,7 +45,7 @@ describe('Datepicker', () => {
   });
 
   it('should highlight today', () => {
-    render(<Datepicker value={initialDate} onChange={() => {}} />);
+    render(<TestApp />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
 
@@ -50,7 +62,7 @@ describe('Datepicker', () => {
 
   it('should highlight selected date', () => {
     const selectedDate = initialDate;
-    render(<Datepicker value={selectedDate} onChange={() => {}} />);
+    render(<TestApp />);
     // open popup
     userEvent.click(screen.getByTestId('date-picker-input'));
 
@@ -66,7 +78,29 @@ describe('Datepicker', () => {
   });
 
   it('should select date', () => {
-    
+    const onChange = jest.fn();
+    render(<TestApp onChange={onChange} />);
+
+    // open popup
+    userEvent.click(screen.getByTestId('date-picker-input'));
+
+    expect(screen.queryByTestId('date-picker-popup')).toBeInTheDocument();
+
+    const selectCells = screen
+      .getAllByTestId('date-picker-popup-cell')
+      // get 15-th date
+      .filter((item) => item.textContent === '15');
+
+    expect(selectCells).toHaveLength(1);
+    const cell = selectCells[0];
+
+    userEvent.click(cell);
+
+    // popup must be closed
+    expect(screen.queryByTestId('date-picker-popup')).not.toBeInTheDocument();
+
+    expect(onChange).toBeCalledWith(new Date(2022, 7, 15));
+    expect(screen.getByTestId('date-picker-input')).toHaveValue('15-08-2022');
   });
 
   it.todo('should apply valid date from input on outside click');
