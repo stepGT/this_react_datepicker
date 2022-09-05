@@ -205,17 +205,17 @@ const DatepickerPopupContent = ({
   return (
     <div className="calendarPanel">
       <div className="calendarPanel__header">
-        <div className="calendarPanel__date">
+        <div data-testid="date-picker-popup-month" className="calendarPanel__date">
           {months[panelMonth]} {panelYear}
         </div>
         <div className="calendarPanel__buttons">
           <div className="calendarPanel__buttons-left">
-            <button onClick={prevYear}>Prev Year</button>
-            <button onClick={prevMonth}>Prev Month</button>
+            <button data-testid="date-picker-popup-prev-year" onClick={prevYear}>Prev Year</button>
+            <button data-testid="date-picker-popup-prev-month" onClick={prevMonth}>Prev Month</button>
           </div>
           <div className="calendarPanel__buttons-right">
-            <button onClick={nextMonth}>Next Month</button>
-            <button onClick={nextYear}>Next Year</button>
+            <button data-testid="date-picker-popup-next-month" onClick={nextMonth}>Next Month</button>
+            <button data-testid="date-picker-popup-next-year" onClick={nextYear}>Next Year</button>
           </div>
         </div>
       </div>

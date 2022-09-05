@@ -136,13 +136,69 @@ describe('Datepicker', () => {
     expect(input).toHaveValue(initialDateString);
   });
 
+  it('should show correct month in popup', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    expect(screen.getByTestId('date-picker-popup-month')).toHaveTextContent(initialDatePopupString);
+  });
+
+  it('should move to the next month', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    const nextMonthButton = screen.getByTestId('date-picker-popup-next-month');
+    const popupMonth = screen.getByTestId('date-picker-popup-month');
+
+    expect(popupMonth).toHaveTextContent(initialDatePopupString);
+
+    userEvent.click(nextMonthButton);
+
+    expect(popupMonth).toHaveTextContent('Sep 2022');
+
+    userEvent.click(nextMonthButton);
+
+    expect(popupMonth).toHaveTextContent('Oct 2022');
+  });
+
+  it('should move to the prev month', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    const prevMonthButton = screen.getByTestId('date-picker-popup-prev-month');
+    const popupMonth = screen.getByTestId('date-picker-popup-month');
+
+    expect(popupMonth).toHaveTextContent(initialDatePopupString);
+
+    userEvent.click(prevMonthButton);
+
+    expect(popupMonth).toHaveTextContent('Jul 2022');
+
+    userEvent.click(prevMonthButton);
+
+    expect(popupMonth).toHaveTextContent('Jun 2022');
+  });
+
   it.todo('should apply valid date from input on enter press');
   it.todo('should update popup calendar when we update input value');
-
-  it.todo('should show correct month in popup');
-
-  it.todo('should move to the next month');
-  it.todo('should move to the prev month');
 
   it.todo('should move to the next year');
   it.todo('should move to the prev year');
