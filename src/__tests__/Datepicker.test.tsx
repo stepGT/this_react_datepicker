@@ -245,8 +245,45 @@ describe('Datepicker', () => {
     expect(popupMonth).toHaveTextContent('Aug 2020');
   });
 
-  it.todo('should apply valid date from input on enter press');
-  it.todo('should update popup calendar when we update input value');
+  it('should apply valid date from input on enter press', () => {
+    const onChange = jest.fn();
+    render(<TestApp onChange={onChange} />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    userEvent.clear(input);
+    userEvent.type(input, '31-08-2022');
+
+    // outside click
+    userEvent.keyboard('[Enter]');
+
+    expect(onChange).toBeCalledWith(new Date(2022, 7, 31));
+  });
+
+  it('should update popup calendar when we update input value', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    const popupMonth = screen.getByTestId('date-picker-popup-month');
+
+    expect(popupMonth).toHaveTextContent(initialDatePopupString);
+
+    userEvent.clear(input);
+    userEvent.type(input, '01-01-2022');
+
+    expect(popupMonth).toHaveTextContent('Jan 2022');
+
+    userEvent.clear(input);
+    userEvent.type(input, '15-10-2002');
+
+    expect(popupMonth).toHaveTextContent('Oct 2002');
+  });
 });
 
 describe('min/max', () => {
