@@ -103,10 +103,40 @@ describe('Datepicker', () => {
     expect(screen.getByTestId('date-picker-input')).toHaveValue('15-08-2022');
   });
 
-  it.todo('should apply valid date from input on outside click');
-  it.todo('should apply valid date from input on enter press');
+  it('should apply valid date from input on outside click', () => {
+    const onChange = jest.fn();
+    render(<TestApp onChange={onChange} />);
 
-  it.todo('should reset invalid date from input on outside click');
+    const input = screen.getByTestId('date-picker-input');
+
+    userEvent.clear(input);
+    userEvent.type(input, '31-08-2022');
+
+    // outside click
+    userEvent.click(document.documentElement);
+
+    expect(onChange).toBeCalledWith(new Date(2022, 7, 31));
+  });
+
+  it('should reset invalid date from input on outside click', () => {
+    const initialDateString = '01-08-2022';
+
+    const onChange = jest.fn();
+    render(<TestApp onChange={onChange} />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    userEvent.clear(input);
+    userEvent.type(input, '32-08-2022');
+
+    // outside click
+    userEvent.click(document.documentElement);
+
+    expect(onChange).not.toBeCalled();
+    expect(input).toHaveValue(initialDateString);
+  });
+
+  it.todo('should apply valid date from input on enter press');
   it.todo('should update popup calendar when we update input value');
 
   it.todo('should show correct month in popup');
