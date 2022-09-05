@@ -287,6 +287,73 @@ describe('Datepicker', () => {
 });
 
 describe('min/max', () => {
-  it.todo('should disable dates out of range');
-  it.todo('highlight input with out of range date');
+  it('should disable dates out of range', () => {
+    const onChange = jest.fn();
+    render(<TestApp onChange={onChange} min={new Date(2022, 1, 1)} max={new Date(2022, 12, 31)} />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    userEvent.click(input);
+
+    const prevYearButton = screen.getByTestId('date-picker-popup-prev-year');
+    const nextYearButton = screen.getByTestId('date-picker-popup-next-year');
+
+    // min
+    userEvent.click(prevYearButton);
+
+    const minDateCells = screen.getAllByTestId('date-picker-popup-cell');
+
+    expect(
+      minDateCells.every((cell) => cell.classList.contains('calendarPanelItem__not-in-range')),
+    ).toBe(true);
+
+    // click on each cell
+    minDateCells.forEach((cell) => {
+      userEvent.click(cell);
+    });
+
+    expect(onChange).not.toBeCalled();
+
+    // max
+    // click 2 times to move 1 year ahead of initial date
+    userEvent.click(nextYearButton);
+    userEvent.click(nextYearButton);
+
+    const maxDateCells = screen.getAllByTestId('date-picker-popup-cell');
+
+    expect(
+      maxDateCells.every((cell) => cell.classList.contains('calendarPanelItem__not-in-range')),
+    ).toBe(true);
+
+    // click on each cell
+    maxDateCells.forEach((cell) => {
+      userEvent.click(cell);
+    });
+
+    expect(onChange).not.toBeCalled();
+  });
+
+  it('highlight input with out of range date', () => {
+    render(<TestApp min={new Date(2022, 1, 1)} max={new Date(2022, 12, 31)} />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // max
+    userEvent.clear(input);
+    userEvent.type(input, '07-07-2023');
+
+    expect(input).toHaveClass('datePicker__input--invalid');
+
+    // min
+    userEvent.clear(input);
+    userEvent.type(input, '07-07-2021');
+
+    expect(input).toHaveClass('datePicker__input--invalid');
+
+    // correct
+    userEvent.clear(input);
+    userEvent.type(input, '07-07-2022');
+
+    expect(input).not.toHaveClass('datePicker__input--invalid');
+  });
 });
