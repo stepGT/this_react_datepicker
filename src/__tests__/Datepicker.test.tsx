@@ -197,11 +197,56 @@ describe('Datepicker', () => {
     expect(popupMonth).toHaveTextContent('Jun 2022');
   });
 
+  it('should move to the next year', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    const nextYearButton = screen.getByTestId('date-picker-popup-next-year');
+    const popupMonth = screen.getByTestId('date-picker-popup-month');
+
+    expect(popupMonth).toHaveTextContent(initialDatePopupString);
+
+    userEvent.click(nextYearButton);
+
+    expect(popupMonth).toHaveTextContent('Aug 2023');
+
+    userEvent.click(nextYearButton);
+
+    expect(popupMonth).toHaveTextContent('Aug 2024');
+  });
+
+  it('should move to the prev year', () => {
+    const initialDatePopupString = 'Aug 2022';
+
+    render(<TestApp />);
+
+    const input = screen.getByTestId('date-picker-input');
+
+    // open popup
+    userEvent.click(input);
+
+    const prevYearButton = screen.getByTestId('date-picker-popup-prev-year');
+    const popupMonth = screen.getByTestId('date-picker-popup-month');
+
+    expect(popupMonth).toHaveTextContent(initialDatePopupString);
+
+    userEvent.click(prevYearButton);
+
+    expect(popupMonth).toHaveTextContent('Aug 2021');
+
+    userEvent.click(prevYearButton);
+
+    expect(popupMonth).toHaveTextContent('Aug 2020');
+  });
+
   it.todo('should apply valid date from input on enter press');
   it.todo('should update popup calendar when we update input value');
-
-  it.todo('should move to the next year');
-  it.todo('should move to the prev year');
 });
 
 describe('min/max', () => {
